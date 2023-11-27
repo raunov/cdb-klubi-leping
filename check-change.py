@@ -6,11 +6,14 @@ import git
 import os
 
 def fetch_and_convert(url):
-    response = requests.get(url)
-    soup = BeautifulSoup(response.content.decode('utf-8'), 'html.parser')
-    content = soup.find(id='content-area')
-    
-    return md(str(content))
+    try:
+        response = requests.get(url, timeout=60)  # Increased timeout
+        soup = BeautifulSoup(response.content.decode('utf-8'), 'html.parser')
+        content = soup.find(id='content-area')
+        return md(str(content))
+    except requests.exceptions.Timeout:
+        print("Request timed out. URL:", url)
+        return None
 
 def has_content_changed(new_content, repo_path, current_version_file):
     with open(f"{repo_path}/versions/{current_version_file}", 'r',encoding='utf-8') as file:
