@@ -22,5 +22,10 @@ jobs:
       run: |
         pip install requests beautifulsoup4 markdownify gitpython
 
+    - name: Configure Git
+      run: |
+        git config --global user.name 'raunov'
+        git config --global user.email 'rauno@rubio.ee'
+      
     - name: Run check-change script
       run: python ./check-change.py
