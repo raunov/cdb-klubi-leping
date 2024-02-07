@@ -17,7 +17,13 @@ def fetch_and_convert(url):
 
 def has_content_changed(new_content, repo_path, slug):
     current_version_file = f'{slug}_current.md'
-    with open(os.path.join(repo_path, 'versions', current_version_file), 'r', encoding='utf-8') as file:
+    current_version_path = os.path.join(repo_path, 'versions', current_version_file)
+    
+    # Check if the current version file exists
+    if not os.path.exists(current_version_path):
+        return True  # If the file doesn't exist, content has "changed" as there is no previous content
+    
+    with open(current_version_path, 'r', encoding='utf-8') as file:
         current_content = file.read()
     return current_content != new_content
 
@@ -47,6 +53,15 @@ def main():
         
     }
     repo_path = os.getcwd()  # e.g. /home/user/my-repo
+    versions_dir = os.path.join(repo_path, 'versions')
+
+    # Create the versions directory if it does not exist
+    if not os.path.exists(versions_dir):
+        os.makedirs(versions_dir)
+
+    # Create the versions directory if it does not exist
+    if not os.path.exists(versions_dir):
+        os.makedirs(versions_dir)
 
     for slug, url in urls.items():
         new_content = fetch_and_convert(url)
